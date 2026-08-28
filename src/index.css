@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-cyber-bg: #090d16;
+    --color-cyber-card: #0e1526;
+    --color-cyber-border: #1e293b;
+    --color-cyber-cyan: #06b6d4;
+    --color-cyber-emerald: #10b981;
+    --color-cyber-danger: #ef4444;
+    --color-cyber-warning: #f59e0b;
+  }
+
+  body {
+    background-color: #060911;
+    color: #f1f5f9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom Cyberpunk / Defense Glow and Animation Utilities */
+@keyframes radarSweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.4));
+  }
+  50% {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 18px rgba(6, 182, 212, 0.8));
+  }
+}
+
+@keyframes scanlineAnim {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(1000%);
+  }
+}
+
+.radar-sweep {
+  animation: radarSweep 4s linear infinite;
+  transform-origin: center center;
+}
+
+.pulse-glow {
+  animation: pulseGlow 2.5s ease-in-out infinite;
+}
+
+.scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.8), transparent);
+  animation: scanlineAnim 3s linear infinite;
+}
+
+/* Glassmorphism & Cyber Card Effects */
+.cyber-card {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+.cyber-card:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.cyber-card-danger {
+  background: rgba(30, 15, 20, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.cyber-card-safe {
+  background: rgba(10, 28, 22, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0284c7;
+}
