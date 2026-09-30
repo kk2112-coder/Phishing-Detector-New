@@ -75,7 +75,9 @@ export function analyzeSms(rawText, senderPhone) {
           score += 40;
         }
       }
-    } catch {}
+    } catch {
+      // ignore url parsing error
+    }
   }
 
   // 3. Sender Number

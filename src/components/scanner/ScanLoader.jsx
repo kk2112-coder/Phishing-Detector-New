@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Shield, Cpu, Activity, Zap, CheckCircle2, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertCircle } from 'lucide-react';
+
+const STEPS = [
+  'Parsing target and checking structure...',
+  'Checking for brand spoofing and lookalike characters...',
+  'Evaluating domain reputation and security indicators...',
+  'Preparing safety verdict and recommendations...',
+];
 
 export const ScanLoader = ({ target, isSlowConnection }) => {
-  const [progress, setProgress] = useState(15);
+  const [progress, setProgress] = useState(20);
   const [currentStep, setCurrentStep] = useState(0);
 
-  const steps = [
-    { label: 'Initializing Heuristic Engine & Format Parser...', weight: 25 },
-    { label: 'Levenshtein & Unicode Homoglyph Matrix Check...', weight: 55 },
-    { label: 'Analyzing Path Entropy, TLD Reputation, & Brand Cloaking...', weight: 85 },
-    { label: 'Synthesizing MITRE ATT&CK Mapping & Risk Gauge...', weight: 100 },
-  ];
-
   useEffect(() => {
-    const stepInterval = isSlowConnection ? 280 : 160;
+    const stepInterval = isSlowConnection ? 260 : 150;
 
     const interval = setInterval(() => {
       setProgress((prev) => {
-        if (prev >= 98) return 98;
-        const next = prev + Math.floor(Math.random() * 12 + 8);
-        return Math.min(next, 98);
+        if (prev >= 95) return 95;
+        const next = prev + Math.floor(Math.random() * 14 + 10);
+        return Math.min(next, 95);
       });
     }, stepInterval);
 
     const stepTimer = setInterval(() => {
-      setCurrentStep((prev) => (prev < steps.length - 1 ? prev + 1 : prev));
-    }, stepInterval * 1.5);
+      setCurrentStep((prev) => (prev < STEPS.length - 1 ? prev + 1 : prev));
+    }, stepInterval * 1.4);
 
     return () => {
       clearInterval(interval);
@@ -34,88 +34,40 @@ export const ScanLoader = ({ target, isSlowConnection }) => {
   }, [isSlowConnection]);
 
   return (
-    <div className="glass-panel rounded-2xl p-6 sm:p-8 space-y-6 shadow-xl relative overflow-hidden animate-fadeIn border border-sky-300 dark:border-sky-500/40">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">
-        <div className="flex items-center space-x-3">
-          <div className="relative flex items-center justify-center w-12 h-12 rounded-xl bg-sky-50 dark:bg-sky-950/80 border border-sky-200 dark:border-cyan-500/50 text-sky-600 dark:text-cyan-400">
-            <Cpu className="w-6 h-6 animate-pulse" />
-            <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-            </span>
-          </div>
-
-          <div>
-            <div className="flex items-center space-x-2">
-              <h3 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                Threat Matrix Evaluation in Progress
-              </h3>
-              <span className="text-[10px] font-mono uppercase font-extrabold px-1.5 py-0.5 rounded bg-sky-100 dark:bg-cyan-950 text-sky-700 dark:text-cyan-400 border border-sky-200 dark:border-cyan-800">
-                ACTIVE
-              </span>
-            </div>
-            <p className="text-xs font-mono text-sky-700 dark:text-cyan-300 truncate max-w-md mt-0.5 font-medium">
-              Target: {target || 'Payload Inspection'}
-            </p>
-          </div>
+    <div className="clean-card rounded-2xl p-6 sm:p-8 space-y-5 animate-fadeIn">
+      <div className="flex items-center space-x-3.5">
+        <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+          <Loader2 className="w-5 h-5 animate-spin" />
         </div>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+            Analyzing for phishing threats...
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-mono truncate mt-0.5">
+            {target || 'Target content'}
+          </p>
+        </div>
+        <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 font-mono">
+          {progress}%
+        </span>
+      </div>
 
-        {/* Slow network indicator banner */}
+      {/* Clean Progress Bar */}
+      <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+        <div
+          className="bg-blue-600 h-full rounded-full transition-all duration-300"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-1">
+        <span>{STEPS[currentStep]}</span>
         {isSlowConnection && (
-          <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-950/70 border border-amber-200 dark:border-amber-800/60 text-amber-700 dark:text-amber-300 text-xs font-mono">
-            <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0" />
-            <span>Slow Connection • Running 100% Locally</span>
-          </div>
-        )}
-      </div>
-
-      {/* Progress Bar & Percentage */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-mono">
-          <span className="text-slate-600 dark:text-slate-400 flex items-center space-x-1.5">
-            <Activity className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400 animate-spin" />
-            <span>{steps[currentStep]?.label}</span>
+          <span className="flex items-center space-x-1 text-amber-600 dark:text-amber-400">
+            <AlertCircle className="w-3.5 h-3.5" />
+            <span>Analyzing locally</span>
           </span>
-          <span className="text-sky-600 dark:text-cyan-300 font-bold text-sm">{progress}%</span>
-        </div>
-
-        <div className="w-full bg-slate-200 dark:bg-slate-950 rounded-full h-2.5 overflow-hidden p-0.5 border border-slate-300 dark:border-slate-800">
-          <div
-            className="bg-gradient-to-r from-sky-500 to-blue-600 h-full rounded-full transition-all duration-300"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Tactical Sub-routine Step Checklist */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
-        {steps.map((step, idx) => {
-          const isDone = currentStep > idx;
-          const isCurrent = currentStep === idx;
-
-          return (
-            <div
-              key={idx}
-              className={`flex items-center space-x-2.5 p-2.5 rounded-xl border text-xs transition-all ${
-                isDone
-                  ? 'bg-emerald-50 dark:bg-slate-950/60 border-emerald-200 dark:border-emerald-900/40 text-emerald-700 dark:text-emerald-400'
-                  : isCurrent
-                  ? 'bg-sky-50 dark:bg-cyan-950/40 border-sky-300 dark:border-cyan-500/40 text-sky-800 dark:text-cyan-200 shadow-sm font-semibold'
-                  : 'bg-slate-50 dark:bg-slate-950/30 border-slate-200 dark:border-slate-800 text-slate-400 dark:text-slate-500'
-              }`}
-            >
-              {isDone ? (
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-              ) : isCurrent ? (
-                <RefreshCw className="w-4 h-4 text-sky-600 dark:text-cyan-400 shrink-0 animate-spin" />
-              ) : (
-                <div className="w-4 h-4 rounded-full border border-slate-300 dark:border-slate-700 shrink-0" />
-              )}
-              <span className="truncate font-mono text-[11px]">{step.label}</span>
-            </div>
-          );
-        })}
+        )}
       </div>
     </div>
   );

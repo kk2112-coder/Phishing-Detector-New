@@ -120,7 +120,7 @@ export function analyzeUrl(rawUrl) {
       });
       score += 100;
     }
-  } catch (e) {
+  } catch {
     // Ignore storage errors in non-browser environments
   }
 
@@ -173,7 +173,7 @@ export function analyzeUrl(rawUrl) {
   }
 
   // 4. Homoglyph / Punycode Deception
-  if (hostname.includes('xn--') || /[^\u0000-\u007F]/.test(hostname)) {
+  if (hostname.includes('xn--') || /[\u0080-\uFFFF]/.test(hostname)) {
     indicators.push({
       id: 'ind-homoglyph-punycode',
       name: 'Punycode / IDN Homoglyph Detected',
@@ -367,7 +367,7 @@ export function analyzeUrl(rawUrl) {
     recommendations.push('No obvious heuristic red flags detected. Maintain standard security vigilance.');
   }
 
-  let summary = '';
+  let summary;
   if (threatLevel === 'malicious') {
     summary = `CRITICAL THREAT: High confidence phishing indicators detected (${indicators.length} red flags). High probability of credential harvesting or brand spoofing.`;
   } else if (threatLevel === 'suspicious') {

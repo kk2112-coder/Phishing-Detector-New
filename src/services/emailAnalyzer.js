@@ -141,7 +141,9 @@ export function analyzeEmail(rawEmail) {
           });
           score += 50;
         }
-      } catch {}
+      } catch {
+        // ignore invalid url
+      }
     }
   }
 
@@ -198,7 +200,7 @@ export function analyzeEmail(rawEmail) {
     recommendations.push('Standard email security practices apply. Verify unexpected requests for financial transfers.');
   }
 
-  let summary = '';
+  let summary;
   if (threatLevel === 'malicious') {
     summary = `MALICIOUS EMAIL DETECTED: High confidence phishing attempt. Contains ${indicators.length} critical indicators including deceptive sender headers, psychological urgency lures, or dangerous embedded destinations.`;
   } else if (threatLevel === 'suspicious') {

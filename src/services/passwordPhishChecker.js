@@ -84,9 +84,9 @@ export function evaluatePasswordSafety(password) {
   const entropy = Math.round(pwd.length * Math.log2(Math.max(2, poolSize)));
 
   // Crack Time estimation
-  let crackTime = 'Instantly';
-  let phishRisk = 'Critical';
-  let label = 'Very Weak';
+  let crackTime;
+  let phishRisk;
+  let label;
 
   if (finalScore >= 85) {
     crackTime = 'Centuries (Quadrillions of guesses)';

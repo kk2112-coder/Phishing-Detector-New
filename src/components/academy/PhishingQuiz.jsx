@@ -71,7 +71,9 @@ export const PhishingQuiz = () => {
         spread: 70,
         origin: { y: 0.6 },
       });
-    } catch {}
+    } catch {
+      // ignore confetti errors
+    }
   };
 
   const getRank = (finalScore) => {
