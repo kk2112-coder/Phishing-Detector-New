@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { QrCode, Upload, Sparkles, AlertTriangle, ArrowRight } from 'lucide-react';
+import { QrCode, Upload, Sparkles, AlertTriangle, ArrowRight, Shield } from 'lucide-react';
 import { decodeQrFromImageFile } from '../../services/qrScanner';
 import { analyzeUrl } from '../../services/urlAnalyzer';
 import { ScanResults } from './ScanResults';
@@ -58,22 +58,24 @@ export const QrScanner = ({ onScanComplete, onOpenAbuse }) => {
   const handleLoadSamplePayload = (payloadUrl) => {
     setErrorMsg(null);
     setScanning(true);
-    setDecodedPayload(payloadUrl);
     playScanSweep();
 
     setTimeout(() => {
-      const scanResult = analyzeUrl(payloadUrl);
-      scanResult.category = 'qr';
-      scanResult.target = `QR Payload: ${payloadUrl}`;
-      setCurrentResult(scanResult);
+      const result = analyzeUrl(payloadUrl);
+      setDecodedPayload(payloadUrl);
+      setCurrentResult(result);
       setScanning(false);
 
-      if (scanResult.threatLevel === 'malicious') playDangerAlert();
-      else if (scanResult.threatLevel === 'suspicious') playWarningBlip();
+      if (result.threatLevel === 'malicious') playDangerAlert();
+      else if (result.threatLevel === 'suspicious') playWarningBlip();
       else playSafePing();
 
-      if (onScanComplete) onScanComplete(scanResult);
-    }, 500);
+      if (onScanComplete) onScanComplete(result);
+    }, 600);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
   };
 
   const handleDrop = (e) => {
@@ -85,69 +87,82 @@ export const QrScanner = ({ onScanComplete, onOpenAbuse }) => {
 
   return (
     <div className="space-y-6">
-      <div className="relative bg-slate-900/90 border border-cyan-900/50 rounded-2xl p-6 shadow-2xl backdrop-blur-md overflow-hidden">
-        {scanning && <div className="scanline" />}
-
+      <div className="relative glass-panel rounded-2xl p-6 overflow-hidden">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="p-2 rounded-lg bg-cyan-950 border border-cyan-800 text-cyan-400">
+          <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 text-sky-600 dark:text-cyan-400">
             <QrCode className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white tracking-wide">
-              QR Code (Quishing) Image Threat Scanner
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+              QR Code Quishing & Payload Extractor
             </h2>
-            <p className="text-xs text-slate-400">
-              Decode physical QR stickers, email QR attachments, and inspect embedded malicious redirection targets
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Decode QR images 100% locally in browser to inspect embedded redirection URLs without visiting them
             </p>
           </div>
         </div>
 
+        {/* Upload Dropzone */}
         <div
-          onDragOver={(e) => e.preventDefault()}
+          onDragOver={handleDragOver}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className="border-2 border-dashed border-cyan-900/60 hover:border-cyan-500/60 bg-slate-950/60 hover:bg-slate-950/90 rounded-2xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center space-y-3 group"
+          className="border-2 border-dashed border-slate-300 dark:border-white/10 hover:border-sky-500 dark:hover:border-cyan-400/50 rounded-2xl p-8 text-center cursor-pointer transition-colors bg-slate-50/50 dark:bg-slate-900/30"
         >
           <input
             type="file"
             ref={fileInputRef}
-            onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
             accept="image/*"
             className="hidden"
+            onChange={(e) => {
+              if (e.target.files && e.target.files[0]) {
+                handleFileUpload(e.target.files[0]);
+              }
+            }}
           />
 
-          <div className="p-4 rounded-full bg-cyan-950/80 border border-cyan-800/40 text-cyan-400 group-hover:scale-110 transition-transform">
-            <Upload className="w-8 h-8" />
-          </div>
-
-          <div>
-            <p className="text-sm font-semibold text-slate-200">
-              Drag & drop a QR code image here, or <span className="text-cyan-400 underline">browse files</span>
-            </p>
-            <p className="text-xs text-slate-500 mt-1">
-              Supports PNG, JPG, WEBP, and camera snapshots
-            </p>
+          <div className="flex flex-col items-center justify-center space-y-3">
+            <div className="w-12 h-12 rounded-2xl bg-sky-100 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 text-sky-600 dark:text-cyan-400 flex items-center justify-center">
+              <Upload className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-slate-800 dark:text-white">
+                Upload or Drop QR Code Screenshot / Photo
+              </p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Supports PNG, JPG, WebP, GIF • Processed securely in browser memory
+              </p>
+            </div>
           </div>
         </div>
 
         {errorMsg && (
-          <div className="mt-4 p-3 rounded-lg bg-red-950/50 border border-red-800/50 text-red-300 text-xs flex items-center space-x-2">
-            <AlertTriangle className="w-4 h-4 shrink-0 text-red-400" />
+          <div className="mt-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/50 text-red-700 dark:text-red-300 text-xs flex items-center space-x-2">
+            <AlertTriangle className="w-4 h-4 shrink-0 text-red-500" />
             <span>{errorMsg}</span>
           </div>
         )}
 
         {decodedPayload && (
-          <div className="mt-4 p-3 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono">
-            <span className="text-slate-500 block mb-1">DECODED QR PAYLOAD:</span>
-            <span className="text-cyan-300 break-all">{decodedPayload}</span>
+          <div className="mt-4 p-3.5 rounded-xl bg-sky-50 dark:bg-slate-900/90 border border-sky-200 dark:border-cyan-500/30 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="space-y-0.5 overflow-hidden">
+              <span className="text-[10px] uppercase font-bold text-sky-700 dark:text-cyan-400 block tracking-wider">
+                Decoded QR Payload URI
+              </span>
+              <p className="font-mono text-slate-800 dark:text-cyan-200 truncate">
+                {decodedPayload}
+              </p>
+            </div>
+            <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800 shrink-0 self-start sm:self-auto">
+              Decoded Locally
+            </span>
           </div>
         )}
 
-        <div className="mt-5 pt-4 border-t border-slate-800/80">
-          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-2.5">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Simulate Real-World Quishing (QR Phishing) Attacks:</span>
+        <div className="mt-5 pt-4 border-t border-slate-200 dark:border-white/5">
+          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2.5">
+            <Sparkles className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
+            <span>Load Known QR Quishing Scam Samples:</span>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -156,19 +171,19 @@ export const QrScanner = ({ onScanComplete, onOpenAbuse }) => {
                 key={idx}
                 type="button"
                 onClick={() => handleLoadSamplePayload(sample.payload)}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-950/80 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 hover:border-cyan-800/60 transition-all text-left"
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl glass-card text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-cyan-300 text-xs transition-all text-left cursor-pointer"
                 title={sample.desc}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                <span className="font-medium text-slate-200">{sample.label}</span>
-                <ArrowRight className="w-3 h-3 text-slate-500" />
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-cyan-400"></span>
+                <span className="font-medium">{sample.label}</span>
+                <ArrowRight className="w-3 h-3 text-slate-400" />
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      {currentResult && (
+      {currentResult && !scanning && (
         <ScanResults
           result={currentResult}
           onOpenAbuse={onOpenAbuse}

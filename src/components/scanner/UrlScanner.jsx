@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Search, RefreshCw, Sparkles, Shield, ArrowRight } from 'lucide-react';
+import { Globe, Search, RefreshCw, Sparkles, Shield, ArrowRight, X } from 'lucide-react';
 import { analyzeUrl } from '../../services/urlAnalyzer';
 import { ScanResults } from './ScanResults';
 import { ScanLoader } from './ScanLoader';
@@ -53,18 +53,16 @@ export const UrlScanner = ({ onScanComplete, onOpenAbuse, isSlowConnection }) =>
 
   return (
     <div className="space-y-6">
-      <div className="relative bg-slate-900/90 border border-cyan-900/50 rounded-2xl p-6 shadow-2xl backdrop-blur-md overflow-hidden">
-        {scanning && <div className="scanline" />}
-
+      <div className="relative glass-panel rounded-2xl p-6 overflow-hidden">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="p-2 rounded-lg bg-cyan-950 border border-cyan-800 text-cyan-400">
+          <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 text-sky-600 dark:text-cyan-400">
             <Globe className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white tracking-wide">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
               URL & Domain Deep Inspection
             </h2>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-600 dark:text-slate-300">
               Heuristic typosquatting, IDN homoglyphs, TLD reputation, and path entropy scanner
             </p>
           </div>
@@ -78,7 +76,7 @@ export const UrlScanner = ({ onScanComplete, onOpenAbuse, isSlowConnection }) =>
           className="flex flex-col sm:flex-row items-stretch gap-3"
         >
           <div className="relative flex-1">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
               <Search className="w-4 h-4" />
             </div>
             <input
@@ -86,20 +84,29 @@ export const UrlScanner = ({ onScanComplete, onOpenAbuse, isSlowConnection }) =>
               value={urlInput}
               onChange={(e) => setUrlInput(e.target.value)}
               placeholder="Enter suspicious URL or domain (e.g. paypa1-login.xyz/verify)"
-              className="w-full pl-10 pr-4 py-3 bg-slate-950 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl text-slate-100 placeholder-slate-500 text-sm font-mono transition-all outline-none"
+              className="glass-input w-full pl-10 pr-10 py-3 rounded-xl text-sm font-mono outline-none"
             />
+            {urlInput && (
+              <button
+                type="button"
+                onClick={handleClear}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
             <button
               type="submit"
               disabled={scanning || !urlInput.trim()}
-              className="flex-1 sm:flex-none flex items-center justify-center space-x-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 text-white font-bold text-sm shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
+              className="flex-1 sm:flex-none flex items-center justify-center space-x-2 px-6 py-3 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 disabled:opacity-50 text-white font-semibold text-sm shadow-md transition-all cursor-pointer"
             >
               {scanning ? (
                 <>
                   <RefreshCw className="w-4 h-4 animate-spin" />
-                  <span>Scanning Heuristics...</span>
+                  <span>Scanning...</span>
                 </>
               ) : (
                 <>
@@ -113,7 +120,7 @@ export const UrlScanner = ({ onScanComplete, onOpenAbuse, isSlowConnection }) =>
               <button
                 type="button"
                 onClick={handleClear}
-                className="px-3.5 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium transition-colors"
+                className="px-3.5 py-3 rounded-xl glass-card hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-medium transition-colors cursor-pointer"
               >
                 Clear
               </button>
@@ -121,9 +128,9 @@ export const UrlScanner = ({ onScanComplete, onOpenAbuse, isSlowConnection }) =>
           </div>
         </form>
 
-        <div className="mt-5 pt-4 border-t border-slate-800/80">
-          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-2.5">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+        <div className="mt-5 pt-4 border-t border-slate-200 dark:border-white/5">
+          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2.5">
+            <Sparkles className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
             <span>Load Quick Threat Benchmark Samples:</span>
           </div>
 
@@ -133,12 +140,12 @@ export const UrlScanner = ({ onScanComplete, onOpenAbuse, isSlowConnection }) =>
                 key={idx}
                 type="button"
                 onClick={() => handleLoadSample(sample.url)}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-950/80 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 hover:border-cyan-800/60 transition-all text-left"
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl glass-card text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-cyan-300 text-xs transition-all text-left cursor-pointer"
                 title={sample.desc}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                <span className="font-medium text-slate-200">{sample.label}</span>
-                <ArrowRight className="w-3 h-3 text-slate-500" />
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-cyan-400"></span>
+                <span className="font-medium">{sample.label}</span>
+                <ArrowRight className="w-3 h-3 text-slate-400" />
               </button>
             ))}
           </div>

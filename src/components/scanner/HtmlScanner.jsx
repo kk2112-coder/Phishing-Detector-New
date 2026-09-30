@@ -69,15 +69,16 @@ export const HtmlScanner = ({ onScanComplete, onOpenAbuse }) => {
   const [scanning, setScanning] = useState(false);
   const [currentResult, setCurrentResult] = useState(null);
 
-  const handleScan = (codeToScan) => {
-    const code = (codeToScan !== undefined ? codeToScan : htmlInput).trim();
-    if (!code) return;
+  const handleScan = (content) => {
+    const codeToScan = (content !== undefined ? content : htmlInput).trim();
+    if (!codeToScan) return;
 
     setScanning(true);
+    setCurrentResult(null);
     playScanSweep();
 
     setTimeout(() => {
-      const result = analyzeHtml(code);
+      const result = analyzeHtml(codeToScan);
       setCurrentResult(result);
       setScanning(false);
 
@@ -101,19 +102,17 @@ export const HtmlScanner = ({ onScanComplete, onOpenAbuse }) => {
 
   return (
     <div className="space-y-6">
-      <div className="relative bg-slate-900/90 border border-cyan-900/50 rounded-2xl p-6 shadow-2xl backdrop-blur-md overflow-hidden">
-        {scanning && <div className="scanline" />}
-
+      <div className="relative glass-panel rounded-2xl p-6 overflow-hidden">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="p-2 rounded-lg bg-cyan-950 border border-cyan-800 text-cyan-400">
+          <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-500/10 border border-sky-200 dark:border-sky-500/20 text-sky-600 dark:text-cyan-400">
             <Code className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-white tracking-wide">
-              HTML DOM & Source Code Inspector
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+              HTML DOM & Script Harvester Analyzer
             </h2>
-            <p className="text-xs text-slate-400">
-              Detect credential exfiltration webhooks, obfuscated JS packers, anti-devtools scripts, and hidden password traps
+            <p className="text-xs text-slate-600 dark:text-slate-300">
+              Detect deceptive form actions, Discord/Telegram webhook exfiltration, eval() obfuscators, and zero-font hidden cloaking
             </p>
           </div>
         </div>
@@ -126,16 +125,16 @@ export const HtmlScanner = ({ onScanComplete, onOpenAbuse }) => {
           className="space-y-4"
         >
           <textarea
-            rows={8}
+            rows={7}
             value={htmlInput}
             onChange={(e) => setHtmlInput(e.target.value)}
-            placeholder="Paste HTML source code, form elements, or script tags here..."
-            className="w-full p-4 bg-slate-950 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 rounded-xl text-slate-100 placeholder-slate-500 text-xs font-mono transition-all outline-none resize-y"
+            placeholder="Paste raw HTML source code or page DOM snippet here (e.g. <html>, <form action=...>, <script>)..."
+            className="glass-input w-full p-4 rounded-xl text-xs font-mono outline-none resize-y"
           />
 
           <div className="flex items-center justify-between gap-3">
-            <div className="text-xs text-slate-500 font-mono">
-              Inspects &lt;form action&gt; destinations, script obfuscation, and zero-font text
+            <div className="text-xs text-slate-500 dark:text-slate-400 font-mono">
+              {htmlInput.length > 0 ? `${htmlInput.length} bytes parsed` : 'Supports full HTML5 & script payloads'}
             </div>
 
             <div className="flex items-center gap-2">
@@ -143,7 +142,7 @@ export const HtmlScanner = ({ onScanComplete, onOpenAbuse }) => {
                 <button
                   type="button"
                   onClick={handleClear}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition-colors"
+                  className="px-4 py-2.5 rounded-xl glass-card text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-medium transition-colors cursor-pointer"
                 >
                   Clear
                 </button>
@@ -152,17 +151,17 @@ export const HtmlScanner = ({ onScanComplete, onOpenAbuse }) => {
               <button
                 type="submit"
                 disabled={scanning || !htmlInput.trim()}
-                className="flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50 text-white font-bold text-xs shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
+                className="flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 disabled:opacity-50 text-white font-semibold text-xs shadow-md transition-all cursor-pointer"
               >
                 {scanning ? (
                   <>
                     <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    <span>Analyzing DOM & Scripts...</span>
+                    <span>Parsing DOM Elements...</span>
                   </>
                 ) : (
                   <>
                     <Shield className="w-3.5 h-3.5" />
-                    <span>Inspect HTML Security</span>
+                    <span>Analyze DOM Code</span>
                   </>
                 )}
               </button>
@@ -170,10 +169,10 @@ export const HtmlScanner = ({ onScanComplete, onOpenAbuse }) => {
           </div>
         </form>
 
-        <div className="mt-5 pt-4 border-t border-slate-800/80">
-          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-400 mb-2.5">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Load Real Phishing Kit Source Signatures:</span>
+        <div className="mt-5 pt-4 border-t border-slate-200 dark:border-white/5">
+          <div className="flex items-center space-x-2 text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2.5">
+            <Sparkles className="w-3.5 h-3.5 text-sky-600 dark:text-cyan-400" />
+            <span>Load Known Credential Harvester DOM Samples:</span>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -182,19 +181,19 @@ export const HtmlScanner = ({ onScanComplete, onOpenAbuse }) => {
                 key={idx}
                 type="button"
                 onClick={() => handleLoadSample(sample.code)}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-slate-950/80 hover:bg-slate-800 text-slate-300 text-xs border border-slate-800 hover:border-cyan-800/60 transition-all text-left"
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl glass-card text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-cyan-300 text-xs transition-all text-left cursor-pointer"
                 title={sample.desc}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                <span className="font-medium text-slate-200">{sample.label}</span>
-                <ArrowRight className="w-3 h-3 text-slate-500" />
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-cyan-400"></span>
+                <span className="font-medium">{sample.label}</span>
+                <ArrowRight className="w-3 h-3 text-slate-400" />
               </button>
             ))}
           </div>
         </div>
       </div>
 
-      {currentResult && (
+      {currentResult && !scanning && (
         <ScanResults
           result={currentResult}
           onOpenAbuse={onOpenAbuse}

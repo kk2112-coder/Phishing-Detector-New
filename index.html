@@ -4,8 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="PhishGuard AI - Multi-Vector Phishing Detection & Threat Intelligence Platform" />
-    <meta name="theme-color" content="#060911" />
     <title>PhishGuard AI - Next-Gen Phishing & Social Engineering Detector</title>
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('phishguard_theme');
+          var theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+            document.documentElement.setAttribute('data-theme', 'dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+            document.documentElement.setAttribute('data-theme', 'light');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

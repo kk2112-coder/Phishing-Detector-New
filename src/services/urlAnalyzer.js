@@ -74,6 +74,56 @@ export function analyzeUrl(rawUrl) {
   const search = parsedUrl ? parsedUrl.search.toLowerCase() : '';
   const fullHref = parsedUrl ? parsedUrl.href : rawUrl;
 
+  // Check custom Whitelist and Blacklist from Settings / localStorage
+  try {
+    const rawWhite = typeof localStorage !== 'undefined' ? localStorage.getItem('phishguard_whitelist') : null;
+    const whitelist = rawWhite ? JSON.parse(rawWhite) : ['google.com', 'microsoft.com', 'github.com', 'apple.com', 'paypal.com'];
+    if (whitelist.some(w => hostname === w.toLowerCase() || hostname.endsWith('.' + w.toLowerCase()))) {
+      return {
+        id: `scan-${Date.now().toString(36)}`,
+        target: rawUrl,
+        category: 'url',
+        timestamp: new Date().toLocaleTimeString() + ', ' + new Date().toLocaleDateString(),
+        riskScore: 0,
+        threatLevel: 'safe',
+        summary: `VERIFIED SAFE: Domain matches your trusted custom Whitelist (${hostname}).`,
+        targetDomain: hostname,
+        brandImpersonation: null,
+        indicators: [],
+        mitreTechniques: [],
+        recommendations: [
+          'This domain is in your verified safe whitelist.',
+          'Standard safe browsing precautions apply.'
+        ],
+        meta: {
+          protocol: parsedUrl?.protocol || 'https:',
+          hostname,
+          tld: hostname.split('.').pop() || '',
+          entropy: '1.00',
+          fullUrl: fullHref
+        }
+      };
+    }
+
+    const rawBlack = typeof localStorage !== 'undefined' ? localStorage.getItem('phishguard_blacklist') : null;
+    const blacklist = rawBlack ? JSON.parse(rawBlack) : ['malware-traffic-analysis.net', 'evil-phish-kit.xyz', 'crypto-drain-seed.top'];
+    if (blacklist.some(b => hostname === b.toLowerCase() || hostname.includes(b.toLowerCase()))) {
+      indicators.push({
+        id: 'ind-custom-blacklist',
+        name: 'Custom High-Threat Blacklist Match',
+        category: 'reputation',
+        severity: 'danger',
+        description: 'This domain or pattern matches your custom security blacklist policy.',
+        evidence: hostname,
+        scoreImpact: 100,
+        mitreTechniqueId: 'T1566.002'
+      });
+      score += 100;
+    }
+  } catch (e) {
+    // Ignore storage errors in non-browser environments
+  }
+
   // 1. IP Address as Hostname
   const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
   if (ipv4Regex.test(hostname)) {
