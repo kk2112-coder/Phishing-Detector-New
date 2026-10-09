@@ -168,39 +168,39 @@ export const ScannerHub = ({
             </p>
           </div>
 
-          {/* Simple Tab Pills */}
-          <div className="inline-flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+          {/* High-Contrast Tab Pills */}
+          <div className="inline-flex p-1.5 bg-slate-200/80 dark:bg-slate-800 rounded-xl border border-slate-300 dark:border-slate-700">
             <button
               onClick={() => setActiveTab('url')}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'url'
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-300/60 dark:hover:bg-slate-700/60'
               }`}
             >
-              <Globe className="w-3.5 h-3.5" />
+              <Globe className="w-4 h-4" />
               <span>Website Link</span>
             </button>
             <button
               onClick={() => setActiveTab('message')}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'message'
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-300/60 dark:hover:bg-slate-700/60'
               }`}
             >
-              <Mail className="w-3.5 h-3.5" />
+              <Mail className="w-4 h-4" />
               <span>Email / SMS</span>
             </button>
             <button
               onClick={() => setActiveTab('qr')}
-              className={`flex items-center space-x-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'qr'
-                  ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-300/60 dark:hover:bg-slate-700/60'
               }`}
             >
-              <QrCode className="w-3.5 h-3.5" />
+              <QrCode className="w-4 h-4" />
               <span>QR Code</span>
             </button>
           </div>
@@ -217,7 +217,7 @@ export const ScannerHub = ({
               className="flex flex-col sm:flex-row items-stretch gap-3"
             >
               <div className="relative flex-1">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
                   <Search className="w-4 h-4" />
                 </div>
                 <input
@@ -225,14 +225,14 @@ export const ScannerHub = ({
                   value={urlInput}
                   onChange={(e) => setUrlInput(e.target.value)}
                   placeholder="Paste any link or website (e.g. https://example-security-update.com/login)"
-                  className="clean-input w-full pl-10 pr-20 py-3 rounded-xl text-sm font-mono outline-none"
+                  className="clean-input w-full pl-10 pr-20 py-3 rounded-xl text-sm font-mono text-slate-900 dark:text-white placeholder:text-slate-500 outline-none"
                 />
                 <div className="absolute inset-y-0 right-0 pr-2 flex items-center space-x-1">
                   {urlInput ? (
                     <button
                       type="button"
                       onClick={() => setUrlInput('')}
-                      className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                      className="p-1.5 text-slate-500 hover:text-slate-700 dark:hover:text-slate-200"
                       title="Clear input"
                     >
                       <X className="w-4 h-4" />
@@ -241,7 +241,7 @@ export const ScannerHub = ({
                     <button
                       type="button"
                       onClick={() => pasteFromClipboard(setUrlInput)}
-                      className="px-2 py-1 text-xs text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1"
+                      className="px-2 py-1 text-xs text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1 font-semibold"
                       title="Paste from clipboard"
                     >
                       <Clipboard className="w-3.5 h-3.5" />
@@ -254,7 +254,7 @@ export const ScannerHub = ({
               <button
                 type="submit"
                 disabled={scanning || !urlInput.trim()}
-                className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold text-sm transition-colors cursor-pointer flex items-center justify-center space-x-2 shrink-0 shadow-xs"
+                className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-sm transition-colors cursor-pointer flex items-center justify-center space-x-2 shrink-0 shadow-sm"
               >
                 <Shield className="w-4 h-4" />
                 <span>{scanning ? 'Scanning...' : 'Check Link'}</span>
@@ -263,7 +263,7 @@ export const ScannerHub = ({
 
             {/* Quick Benchmark Samples */}
             <div className="pt-2 flex flex-wrap items-center gap-2 text-xs">
-              <span className="text-slate-500 dark:text-slate-400">Try an example:</span>
+              <span className="text-slate-700 dark:text-slate-300 font-semibold">Try an example:</span>
               {URL_SAMPLES.map((sample) => (
                 <button
                   key={sample.label}
@@ -272,7 +272,7 @@ export const ScannerHub = ({
                     setUrlInput(sample.url);
                     runUrlScan(sample.url);
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium transition-colors cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg bg-slate-200/90 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer shadow-2xs"
                 >
                   {sample.label}
                 </button>
@@ -290,14 +290,14 @@ export const ScannerHub = ({
                 value={messageInput}
                 onChange={(e) => setMessageInput(e.target.value)}
                 placeholder="Paste the suspicious email text, headers, or SMS message here..."
-                className="clean-input w-full p-3.5 rounded-xl text-sm font-sans outline-none resize-y"
+                className="clean-input w-full p-3.5 rounded-xl text-sm font-sans text-slate-900 dark:text-white placeholder:text-slate-500 outline-none resize-y"
               />
               <div className="absolute top-2.5 right-2.5 flex items-center space-x-1">
                 {messageInput ? (
                   <button
                     type="button"
                     onClick={() => setMessageInput('')}
-                    className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                    className="p-1.5 text-slate-500 hover:text-slate-700 dark:hover:text-slate-200"
                     title="Clear input"
                   >
                     <X className="w-4 h-4" />
@@ -306,7 +306,7 @@ export const ScannerHub = ({
                   <button
                     type="button"
                     onClick={() => pasteFromClipboard(setMessageInput)}
-                    className="px-2 py-1 text-xs text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-md"
+                    className="px-2.5 py-1 text-xs text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 flex items-center space-x-1 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg font-semibold"
                     title="Paste from clipboard"
                   >
                     <Clipboard className="w-3.5 h-3.5" />
@@ -318,7 +318,7 @@ export const ScannerHub = ({
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2 text-xs">
-                <span className="text-slate-500 dark:text-slate-400">Try an example:</span>
+                <span className="text-slate-700 dark:text-slate-300 font-semibold">Try an example:</span>
                 {MESSAGE_SAMPLES.map((sample) => (
                   <button
                     key={sample.label}
@@ -327,7 +327,7 @@ export const ScannerHub = ({
                       setMessageInput(sample.text);
                       runMessageScan(sample.text);
                     }}
-                    className="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 font-medium transition-colors cursor-pointer"
+                    className="px-3 py-1.5 rounded-lg bg-slate-200/90 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold border border-slate-300 dark:border-slate-700 transition-colors cursor-pointer shadow-2xs"
                   >
                     {sample.label}
                   </button>
@@ -338,7 +338,7 @@ export const ScannerHub = ({
                 type="button"
                 onClick={() => runMessageScan()}
                 disabled={scanning || !messageInput.trim()}
-                className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold text-sm transition-colors cursor-pointer flex items-center justify-center space-x-2 shrink-0 self-end sm:self-auto shadow-xs"
+                className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold text-sm transition-colors cursor-pointer flex items-center justify-center space-x-2 shrink-0 self-end sm:self-auto shadow-sm"
               >
                 <Shield className="w-4 h-4" />
                 <span>{scanning ? 'Analyzing...' : 'Scan Message'}</span>
@@ -363,7 +363,7 @@ export const ScannerHub = ({
 
             <div
               onClick={() => fileInputRef.current?.click()}
-              className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-8 text-center cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition-colors bg-slate-50/50 dark:bg-slate-900/30"
+              className="border-2 border-dashed border-slate-400 dark:border-slate-700 rounded-2xl p-8 text-center cursor-pointer hover:border-blue-600 dark:hover:border-blue-400 transition-colors bg-slate-100/70 dark:bg-slate-900/40"
             >
               <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 mx-auto flex items-center justify-center mb-3">
                 <Upload className="w-6 h-6" />

@@ -1,0 +1,80 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users/{userId}/scans/{scanId}
+// Document ID: Unique Scan UUID or Firestore Auto-ID
+// Fields:
+//   - id: string (required) - Scan identifier
+//   - target: string (required) - The scanned target (URL, message, QR payload)
+//   - category: string (required) - 'url' | 'email' | 'sms' | 'qr'
+//   - timestamp: number (required) - Unix millisecond timestamp
+//   - riskScore: number (required, 0-100) - Normalized risk score
+//   - threatLevel: string (required) - 'Safe' | 'Low Risk' | 'Medium Risk' | 'High Threat' | 'Critical Threat'
+//   - summary: string (required) - Plain language explanation
+//   - indicators: list of maps/strings (optional) - Triggered detection indicators
+//   - details: map (optional) - Technical forensic breakdown
+//   - savedAt: number (optional) - Client save timestamp
+//
+// Collection: users/{userId}
+// Document ID: Matches request.auth.uid
+// Fields:
+//   - email: string (optional)
+//   - displayName: string (optional)
+//   - updatedAt: number (optional)
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isValidScanData() {
+      let data = request.resource.data;
+      return data.id is string
+        && data.target is string
+        && data.category is string
+        && data.timestamp is number
+        && data.riskScore is number
+        && data.riskScore >= 0
+        && data.riskScore <= 100
+        && data.threatLevel is string
+        && data.summary is string;
+    }
+
+    // User profile document
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      // User scan history subcollection
+      match /scans/{scanId} {
+        // Only the authenticated account owner can view their own scans
+        allow read, list: if isOwner(userId);
+        
+        // Only the owner can store a new scan with validated schema
+        allow create: if isOwner(userId) && isValidScanData();
+        
+        // Scan records are immutable audit entries, but owner can update if schema is preserved
+        allow update: if isOwner(userId) && isValidScanData();
+        
+        // Owner can delete individual scans or clear their history
+        allow delete: if isOwner(userId);
+      }
+    }
+
+    // Default deny for all other collections and documents
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

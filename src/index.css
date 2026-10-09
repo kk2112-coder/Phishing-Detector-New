@@ -4,15 +4,16 @@
 
 @layer base {
   :root {
-    --bg-page: #f8fafc;
-    --text-page: #0f172a;
+    /* Crisp, High-Contrast Light Theme Palette */
+    --bg-page: #f1f5f9; /* Slate-100 gives crisp separation from pure white cards */
+    --text-page: #0f172a; /* Slate-900 high contrast readable text */
     --card-bg: #ffffff;
-    --card-border: #e2e8f0;
+    --card-border: #cbd5e1; /* Slate-300 clean, defined border */
     --input-bg: #ffffff;
-    --input-border: #cbd5e1;
+    --input-border: #94a3b8; /* Slate-400 clearly visible input outline */
     --input-text: #0f172a;
-    --scrollbar-track: #f1f5f9;
-    --scrollbar-thumb: #cbd5e1;
+    --scrollbar-track: #e2e8f0;
+    --scrollbar-thumb: #94a3b8;
   }
 
   .dark {
@@ -37,27 +38,27 @@
   }
 }
 
-/* Simple, Clean Card and Input Utilities */
+/* Simple, Clean Card and Input Utilities with High Contrast */
 .clean-card {
   background-color: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   transition: all 0.15s ease-in-out;
 }
 
 .clean-input {
   background-color: var(--input-bg);
-  border: 1px solid var(--input-border);
+  border: 1.5px solid var(--input-border);
   color: var(--input-text);
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
   transition: all 0.15s ease-in-out;
 }
 
 .clean-input:focus {
   border-color: #2563eb;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
 }
 
 /* Minimal Scrollbar */
@@ -76,5 +77,5 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #64748b;
 }
